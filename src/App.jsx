@@ -1,121 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { getAllRecipes } from './services/api'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [recipes, setRecipes] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getAllRecipes()
+      .then(res => {
+        setRecipes(res.data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+    <div style={{
+      backgroundColor: '#FFFFFF', 
+      color: '#1A1A1A', 
+      minHeight: '100vh', 
+      padding: '40px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <h1 className='text-4xl text-orange-500 font-bold'>
+        Recipe Collection
+      </h1>
+      
+      {loading && <p style={{color: '#1A1A1A'}}>Loading recipes...</p>}
+      
+      {recipes.length === 0 && !loading && (
+        <div style={{
+          border: '2px solid #FF6B35', 
+          padding: '20px',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          <p style={{color: '#1A1A1A', fontSize: '18px'}}>
+            No recipes in database yet
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {recipes.map(recipe => (
+        <div key={recipe.id} style={{
+          border: '2px solid #FF6B35', 
+          padding: '20px',
+          borderRadius: '8px',
+          marginBottom: '20px'
+        }}>
+          <h2 style={{color: '#1A1A1A', margin: '0 0 8px 0'}}>
+            {recipe.title}
+          </h2>
+          <p style={{color: '#1A1A1A', margin: '0'}}>
+            {recipe.description}
+          </p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      ))}
+    </div>
   )
 }
 
