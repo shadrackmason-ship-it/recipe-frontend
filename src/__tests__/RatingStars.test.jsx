@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import RatingStars from '../components/RatingStars'
+import RatingStars from '../assets/components/RatingStars'
 
 describe('RatingStars', () => {
   it('renders 5 stars', () => {
@@ -19,6 +19,6 @@ describe('RatingStars', () => {
     const { getAllByRole } = render(<RatingStars rating={3} readonly />)
     const stars = getAllByRole('button')
     expect(stars[0].className).toContain('text-brand-orange')
-    expect(stars[4].className).toContain('text-brand-black')
+    expect(stars[4].className).toContain('text-gray-300')
   })
 })

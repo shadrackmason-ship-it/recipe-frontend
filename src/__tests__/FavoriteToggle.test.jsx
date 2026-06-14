@@ -1,6 +1,6 @@
 import { render, fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import FavoritesToggle from '../components/FavoritesToggle'
+import FavoritesToggle from '../assets/components/FavoritesToggle'
 
 describe('FavoritesToggle', () => {
   it('renders heart icon', () => {

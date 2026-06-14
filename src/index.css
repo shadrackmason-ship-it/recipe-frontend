@@ -1,7 +1,11 @@
 @import "tailwindcss";
-* {
+*:not(button):not(input):not(textarea) {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -15,4 +19,10 @@ html, body, #root {
 
 #root {
   max-width: 100%;
+}
+
+@theme {
+  --color-brand-orange: #FF6B00;
+  --color-brand-black: #000000;
+  --color-brand-white: #FFFFFF;
 }
