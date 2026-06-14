@@ -15,35 +15,25 @@ function Login(){
         setError("");
 
         try{
-            const formData = new URLsearchParams();
+            const formData = new URLSearchParams();
             formData.append("username", email);
             formData.append("password", password);
-
-            const response = await fetch("http://localhost:8000/auth/login",
+            const response = await fetch("http://localhost:8000/api/auth/login",
              {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData,
-                });
-
+                },body: formData,});
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(
           data.detail || "Login failed"
         )
-      }else{
-        navigate("/dashboard")
       }
 
-      localStorage.setItem(
-        "token",
-        data.access_token
-      );
-
-      navigate("/dashboard");
+      localStorage.setItem("token", data.access_token);
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     } 
@@ -69,36 +59,22 @@ function Login(){
         >
           <div>
             <label className="block mb-1 font-medium">
-              Email
-            </label>
-
+              Email</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              type="email" value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full border px-4 py-3 rounded-xl"
-              placeholder="Enter email"
-              required
-            />
+              placeholder="Enter email" required/>
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
-              Password
-            </label>
+            <label className="block mb-1 font-medium">Password</label>
 
             <input
-              type="password"
-              value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              type="password" value={password} 
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full border px-4 py-3 rounded-xl"
-              placeholder="Enter password"
-              required
-            />
+              placeholder="Enter password" required/>
           </div>
 
           {error && (
@@ -107,11 +83,8 @@ function Login(){
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold"
-          >
+          <button type="submit" disabled={loading}
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold">
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>

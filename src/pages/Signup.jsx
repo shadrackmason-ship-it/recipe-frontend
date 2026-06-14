@@ -22,7 +22,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/auth/register",
+        "http://localhost:8000/api/auth/register",
         {
           method: "POST",
           headers: {
