@@ -35,7 +35,6 @@ export default function RecipeList({ refresh }) {
   return (
     <div>
       <h1 className="text-2xl font-bold">Recipes</h1>
-
       <div className="grid md:grid-cols-2 gap-4 mt-6">
         {recipes.map((recipe) =>
           editing === recipe.id ? (
@@ -43,29 +42,23 @@ export default function RecipeList({ refresh }) {
               <input
                 value={form.title || ""}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="input"
-              />
+                className="input"/>
               <input
                 value={form.description || ""}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className="input"
-              />
+                className="input"/>
               <button
                 onClick={saveEdit}
-                className="bg-green-600 text-white px-3 py-1 rounded"
-              >
-                Save
-              </button>
+                className="bg-green-600 text-white px-3 py-1 rounded">Save</button>
             </div>
           ) : (
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
               onEdit={startEdit}
-              onDelete={handleDelete}
-            />
+              onDelete={handleDelete}/>
           )
         )}
       </div>
