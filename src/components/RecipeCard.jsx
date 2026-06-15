@@ -1,46 +1,42 @@
-import { card, typography } from "../styles";
-import { useThemeStyles } from "../styles/useThemeStyles";
-
-export default function RecipeCard({ recipe }) {
-  const t = useThemeStyles();
-
-  if (!recipe) return null;
-
+export default function RecipeCard({ recipe, onEdit, onDelete }) {
   return (
-    <div className={`${card.base} ${card.default} ${t.text}`}>
-
-      {recipe.image && (
-        <img
-          src={recipe.image}
-          alt={recipe.name}
-          className={card.imageSmall}
-        />
-      )}
-
-      <h3 className={typography.h3}>
-        {recipe.name || "Untitled Recipe"}
-      </h3>
-
-      <p className={t.mutedText + " mt-2"}>
-        {recipe.description || "No description available"}
-      </p>
-
-      {recipe.category && (
-        <span className="inline-block mt-2 text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600">
-          {recipe.category}
-        </span>
-      )}
-
-      <div className="mt-3">
-        <p className={t.mutedText}>Ingredients:</p>
-
-        <ul className="list-disc list-inside text-sm">
-          {recipe.ingredients?.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
+    <div className="bg-white p-4 rounded shadow hover:shadow-lg transition space-y-3">
+      <h2 className="text-lg font-bold">{recipe.title}</h2>
+      <p className="text-gray-600">{recipe.description}</p>
+      <div className="text-sm text-gray-500 space-y-1">
+        <p>Category: {recipe.category}</p>
+        <p>Prep: {recipe.prep_time} min</p>
+        <p>Cook: {recipe.cook_time} min</p>
+        <p>Servings: {recipe.servings}</p>
       </div>
-
+      {recipe.ingredients?.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-sm mt-2">Ingredients</h3>
+          <ul className="list-disc pl-5 text-sm text-gray-700">
+            {recipe.ingredients.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {recipe.instructions?.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-sm mt-2">Instructions</h3>
+          <ol className="list-decimal pl-5 text-sm text-gray-700">
+            {recipe.instructions.map((step, index) => (
+              <li key={index}>{step}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => onEdit(recipe)}
+          className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+        <button
+          onClick={() => onDelete(recipe.id)}
+          className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+      </div>
     </div>
   );
 }
