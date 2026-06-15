@@ -1,0 +1,37 @@
+:root {
+  --primary: #ff6a00;   
+  --black: #111111;
+  --white: #ffffff;
+
+  --gray: #6b7280;
+  --border: #e5e7eb;
+
+  --radius: 10px;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: system-ui, Arial, sans-serif;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+}
