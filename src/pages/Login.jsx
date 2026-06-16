@@ -21,7 +21,6 @@ function Login(){
             console.log("Email field:", email);
             console.log("Password field:", password);
             console.log("Sending body:", formData.toString());
-            
             const response = await fetch("https://recipe-backend-30j8.onrender.com/api/auth/login",
              {
                 method: "POST",
@@ -32,7 +31,7 @@ function Login(){
       
       console.log("Response status:", response.status);
       console.log("Response data:", data);
-
+      
       if (!response.ok) {
         throw new Error(
           data.detail || "Login failed"

@@ -9,95 +9,89 @@ import SearchBar from "../components/SearchBar";
 import CategoryFilter from "../components/CategoryFilter";
 import RecipeList from "../components/RecipeList";
 import RecipeForm from "../components/RecipeForm";
-import FavoritesToggle from "../components/FavoritesToggle"
+import FavoritesToggle from "../components/FavoritesToggle";
 import ReviewForm from "../components/ReviewForm";
 
 export default function Home() {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes]       = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [review, setReview] = useState(null);
+  const [loading, setLoading]       = useState(false);
+  const [review, setReview]         = useState(null);
+  const [refresh, setRefresh]       = useState(false);
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery]                   = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
   const debouncedQuery = useDebounce(query, 500);
   const t = useThemeStyles();
 
-  // Load categories
+  // Load categories once on mount
   useEffect(() => {
     async function loadCategories() {
       try {
         const res = await getCategories();
-
         const data = Array.isArray(res?.data)
           ? res.data
-          : res?.data?.categories || [];
-
+          : res?.data?.categories ?? [];
         setCategories(["All", ...data]);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load categories:", err);
         setCategories(["All"]);
       }
     }
-
     loadCategories();
   }, []);
 
-  // Load recipes
+  // Reload recipes when search query, category, or refresh flag changes
   useEffect(() => {
     async function loadRecipes() {
+      setLoading(true);
       try {
-        setLoading(true);
-
         const res = await searchRecipes(debouncedQuery, activeCategory);
-
-        setRecipes(res?.data?.data || res?.data || []);
+        setRecipes(res?.data?.data ?? res?.data ?? []);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load recipes:", err);
         setRecipes([]);
       } finally {
         setLoading(false);
       }
     }
-
     loadRecipes();
-  }, [debouncedQuery, activeCategory]);
-  const [refresh, setRefresh] = useState(false);
+  }, [debouncedQuery, activeCategory, refresh]); // ✅ refresh now triggers a reload
 
-  const triggerRefresh = () => {
-    setRefresh((prev) => !prev);
-  };
-  
+  const triggerRefresh = () => setRefresh((prev) => !prev);
 
   return (
     <main className={`${layout.page} ${t.background} ${t.text}`}>
-      {/* SEARCH SYSTEM (Member 3) */}
       <SearchBar onSearch={setQuery} loading={loading} />
 
-      {/* CATEGORY SYSTEM (Member 3) */}
       <CategoryFilter
         categories={categories}
         active={activeCategory}
         onSelect={setActiveCategory}
       />
-     <RecipeForm onAdd={triggerRefresh} /> 
-      <RecipeList recipes={recipes} loading={loading} refresh={refresh}/>
+
+      {/* RecipeForm adds a new recipe, then triggers a list reload */}
+      <RecipeForm onAdd={triggerRefresh} />
+
+      <RecipeList recipes={recipes} loading={loading} refresh={refresh} />
+
       <FavoritesToggle />
-     <ReviewForm
-  recipeId={1}
-  onSubmit={(data) => {
-    setReview(data);
-  }}
-/>
-{review && (
-  <div className="p-4 mt-4 bg-green-100 rounded">
-    <h3>Latest Review:</h3>
-    <p>Recipe ID: {review.recipeId}</p>
-    <p>Rating: {review.rating}</p>
-    <p>Comment: {review.comment}</p>
-  </div>
-)}
+
+      {/* TODO: replace hardcoded recipeId={1} with a real selected recipe id */}
+      <ReviewForm
+        recipeId={1}
+        onSubmit={(data) => setReview(data)}
+      />
+
+      {review && (
+        <div className="p-4 mt-4 bg-green-100 rounded">
+          <h3 className="font-semibold mb-1">Latest Review</h3>
+          <p>Recipe ID: {review.recipeId}</p>
+          <p>Rating: {review.rating}</p>
+          <p>Comment: {review.comment}</p>
+        </div>
+      )}
     </main>
   );
 }
