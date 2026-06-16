@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { createRecipe } from "../api/recipes";
 
-export default function RecipeForm({ onAdd }) {
+function RecipeForm({ onAdd }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -9,134 +8,164 @@ export default function RecipeForm({ onAdd }) {
     prep_time: "",
     cook_time: "",
     servings: "",
-    ingredients: [],
-    instructions: [],
+    ingredients: "",
+    instructions: "",
   });
-  const [ingredientInput, setIngredientInput] = useState("");
-  const [instructionInput, setInstructionInput] = useState("");
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const addIngredient = () => {
-    if (!ingredientInput.trim()) return;
     setForm({
       ...form,
-      ingredients: [...form.ingredients, ingredientInput],
+      [e.target.name]: e.target.value,
     });
-    setIngredientInput("");
-  };
-
-  const addInstruction = () => {
-    if (!instructionInput.trim()) return;
-    setForm({
-      ...form,
-      instructions: [...form.instructions, instructionInput],
-    });
-    setInstructionInput("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newRecipe = await createRecipe({
-      ...form,
+    const recipeData = {
+      title: form.title,
+      description: form.description,
+      category: form.category,
       prep_time: Number(form.prep_time),
       cook_time: Number(form.cook_time),
       servings: Number(form.servings),
-    });
-    onAdd(newRecipe);
-    setForm({
-      title: "",
-      description: "",
-      category: "",
-      prep_time: "",
-      cook_time: "",
-      servings: "",
-      ingredients: [],
-      instructions: [],
-    });
-    setIngredientInput("");
-    setInstructionInput("");
+      ingredients: form.ingredients
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+      instructions: form.instructions
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+    };
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/recipes/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create recipe");
+      }
+      const data = await response.json();
+      console.log("Recipe created:", data);
+      if (onAdd) {
+        onAdd();
+      }
+      setForm({
+        title: "",
+        description: "",
+        category: "",
+        prep_time: "",
+        cook_time: "",
+        servings: "",
+        ingredients: "",
+        instructions: "",
+      });
+      alert("Recipe created successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Error creating recipe");
+    }
   };
 
-  return (
-    <form onSubmit={handleSubmit}className="bg-white p-4 rounded shadow space-y-4">
-      <input
-        name="title"
-        value={form.title}
-        onChange={handleChange}
-        placeholder="Title"
-        className="input"/>
-      <input
+return (
+  <div className="bg-white rounded-xl shadow-lg p-5 max-w-4xl mx-auto">
+    <h2 className="text-2xl font-bold text-center mb-5">
+      Create Recipe
+    </h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-4">
+        <input
+          type="text"
+          name="title"
+          placeholder="Recipe Title"
+          value={form.title}
+          onChange={handleChange}
+          spellCheck={false}
+          required
+          className="w-full border rounded-lg px-3 py-2"
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={handleChange}
+          spellCheck={false}
+          required
+          className="w-full border rounded-lg px-3 py-2"
+        />
+      </div>
+      <textarea
         name="description"
+        placeholder="Recipe Description"
         value={form.description}
         onChange={handleChange}
-        placeholder="Description"
-        className="input"/>
-      <input
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-        placeholder="Category"
-        className="input"/>
-      <input
-        name="prep_time"
-        value={form.prep_time}
-        onChange={handleChange}
-        placeholder="Prep Time"
-        className="input"/>
-      <input
-        name="cook_time"
-        value={form.cook_time}
-        onChange={handleChange}
-        placeholder="Cook Time"
-        className="input"/>
-      <input
-        name="servings"
-        value={form.servings}
-        onChange={handleChange}
-        placeholder="Servings"
-        className="input"/>
-      <div className="space-y-2">
-        <h3 className="font-bold">Ingredients</h3>
-        <div className="flex gap-2">
-          <input
-            value={ingredientInput}
-            onChange={(e) => setIngredientInput(e.target.value)}
-            placeholder="Add ingredient"
-            className="input flex-1"/>
-          <button
-            type="button"
-            onClick={addIngredient}
-            className="bg-green-600 text-white px-3 rounded">Add</button>
-        </div>
-        <ul className="list-disc pl-5">
-          {form.ingredients.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
+        spellCheck={false}
+        required
+        className="w-full border rounded-lg px-3 py-2"
+      />
+      <div className="grid grid-cols-3 gap-4">
+        <input
+          type="number"
+          name="prep_time"
+          placeholder="Prep Time"
+          value={form.prep_time}
+          onChange={handleChange}
+          required
+          className="border rounded-lg px-3 py-2"
+        />
+        <input
+          type="number"
+          name="cook_time"
+          placeholder="Cook Time"
+          value={form.cook_time}
+          onChange={handleChange}
+          required
+          className="border rounded-lg px-3 py-2"
+        />
+        <input
+          type="number"
+          name="servings"
+          placeholder="Servings"
+          value={form.servings}
+          onChange={handleChange}
+          required
+          className="border rounded-lg px-3 py-2"
+        />
       </div>
-      <div className="space-y-2">
-        <h3 className="font-bold">Instructions</h3>
-        <div className="flex gap-2">
-          <input
-            value={instructionInput}
-            onChange={(e) => setInstructionInput(e.target.value)}
-            placeholder="Add step"
-            className="input flex-1"/>
-          <button
-            type="button"
-            onClick={addInstruction}
-            className="bg-blue-600 text-white px-3 rounded">Add</button>
-        </div>
-        <ol className="list-decimal pl-5">
-          {form.instructions.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ol>
+      <div className="grid md:grid-cols-2 gap-4">
+        <textarea
+          name="ingredients"
+          placeholder="Ingredients (one per line)"
+          value={form.ingredients}
+          onChange={handleChange}
+          spellCheck={false}
+          rows="4"
+          className="w-full border rounded-lg px-3 py-2"
+        />
+        <textarea
+          name="instructions"
+          placeholder="Instructions (one step per line)"
+          value={form.instructions}
+          onChange={handleChange}
+          spellCheck={false}
+          rows="4"
+          className="w-full border rounded-lg px-3 py-2"
+        />
       </div>
-      <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">Add Recipe</button>
+      <button
+        type="submit"
+        className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+      >
+        Create Recipe
+      </button>
     </form>
-  );
+  </div>
+);
 }
+
+export default RecipeForm;

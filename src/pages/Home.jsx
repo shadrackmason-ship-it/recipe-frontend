@@ -7,12 +7,16 @@ import { useThemeStyles } from "../styles/useThemeStyles";
 
 import SearchBar from "../components/SearchBar";
 import CategoryFilter from "../components/CategoryFilter";
-import RecipeCard from "../components/RecipeCard";
+import RecipeList from "../components/RecipeList";
+import RecipeForm from "../components/RecipeForm";
+import FavoritesToggle from "../components/FavoritesToggle"
+import ReviewForm from "../components/ReviewForm";
 
 export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [review, setReview] = useState(null);
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -20,54 +24,80 @@ export default function Home() {
   const debouncedQuery = useDebounce(query, 500);
   const t = useThemeStyles();
 
-useEffect(() => {
-  async function loadCategories() {
-    const response = await getCategories();
-    setCategories(["All", ...(response?.data || [])]);
-  }
-  loadCategories();
-}, []);
+  // Load categories
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await getCategories();
 
-useEffect(() => {
-  async function fetchData() {
-    setLoading(true);
+        const data = Array.isArray(res?.data)
+          ? res.data
+          : res?.data?.categories || [];
 
-    const response = await searchRecipes(debouncedQuery, activeCategory);
+        setCategories(["All", ...data]);
+      } catch (err) {
+        console.error(err);
+        setCategories(["All"]);
+      }
+    }
 
-    setRecipes(response?.data?.data || []);
+    loadCategories();
+  }, []);
 
-    setLoading(false);
-  }
+  // Load recipes
+  useEffect(() => {
+    async function loadRecipes() {
+      try {
+        setLoading(true);
 
-  fetchData();
-}, [debouncedQuery, activeCategory]);
+        const res = await searchRecipes(debouncedQuery, activeCategory);
+
+        setRecipes(res?.data?.data || res?.data || []);
+      } catch (err) {
+        console.error(err);
+        setRecipes([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadRecipes();
+  }, [debouncedQuery, activeCategory]);
+  const [refresh, setRefresh] = useState(false);
+
+  const triggerRefresh = () => {
+    setRefresh((prev) => !prev);
+  };
+  
 
   return (
     <main className={`${layout.page} ${t.background} ${t.text}`}>
-
+      {/* SEARCH SYSTEM (Member 3) */}
       <SearchBar onSearch={setQuery} loading={loading} />
 
+      {/* CATEGORY SYSTEM (Member 3) */}
       <CategoryFilter
         categories={categories}
         active={activeCategory}
         onSelect={setActiveCategory}
       />
-
-      <section className={layout.section}>
-
-        {loading && <p>Searching recipes...</p>}
-
-        {!loading && recipes.length === 0 && (
-          <p className="text-gray-400 mt-10">No recipes found</p>
-        )}
-
-        <div className={layout.grid}>
-          {recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
-
-      </section>
+     <RecipeForm onAdd={triggerRefresh} /> 
+      <RecipeList recipes={recipes} loading={loading} refresh={refresh}/>
+      <FavoritesToggle />
+     <ReviewForm
+  recipeId={1}
+  onSubmit={(data) => {
+    setReview(data);
+  }}
+/>
+{review && (
+  <div className="p-4 mt-4 bg-green-100 rounded">
+    <h3>Latest Review:</h3>
+    <p>Recipe ID: {review.recipeId}</p>
+    <p>Rating: {review.rating}</p>
+    <p>Comment: {review.comment}</p>
+  </div>
+)}
     </main>
   );
 }

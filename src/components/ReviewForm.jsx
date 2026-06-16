@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import RatingStars from '../../components/RatingStars'
+import RatingStars from './RatingStars'
 
 function ReviewForm({ recipeId, onSubmit }) {
   const [rating, setRating] = useState(0)

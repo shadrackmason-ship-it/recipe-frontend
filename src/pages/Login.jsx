@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import  {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login(){
@@ -33,7 +33,7 @@ function Login(){
       }
 
       localStorage.setItem("token", data.access_token);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     } 
