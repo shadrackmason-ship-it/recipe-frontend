@@ -18,7 +18,7 @@ function Login(){
             const formData = new URLSearchParams();
             formData.append("username", email);
             formData.append("password", password);
-            const response = await fetch("http://localhost:8000/api/auth/login",
+            const response = await fetch("https://recipe-backend-30j8.onrender.com",
              {
                 method: "POST",
                 headers: {

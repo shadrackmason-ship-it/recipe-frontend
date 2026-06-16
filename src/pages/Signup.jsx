@@ -26,7 +26,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/auth/register",
+        "https://recipe-backend-30j8.onrender.com",
         {
           method: "POST",
           headers: {

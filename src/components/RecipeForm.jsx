@@ -39,7 +39,7 @@ function RecipeForm({ onAdd }) {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/recipes/", {
+      const response = await fetch("https://recipe-backend-30j8.onrender.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
