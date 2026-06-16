@@ -11,7 +11,8 @@ export const searchRecipes = (query = "", category = "") =>
       category: category || undefined,
     },
   });
-
+export const loginUser = (data) =>
+  api.post("/auth/login", data);
 export const getAllRecipes = () => api.get("/recipes");
 
 export const getCategories = () => api.get("/categories");
