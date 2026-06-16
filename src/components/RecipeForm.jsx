@@ -39,7 +39,7 @@ function RecipeForm({ onAdd }) {
     };
 
     try {
-      const response = await fetch("https://recipe-backend-30j8.onrender.com", {
+      const response = await fetch("https://recipe-backend-30j8.onrender.com/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
