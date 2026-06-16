@@ -2,8 +2,15 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: { Authorization: "Bearer guest-token" },
+  headers: {
+    Authorization: "Bearer guest-token",
+  },
 });
+
+export const loginUser = (data) =>
+  api.post("/auth/login", data);
+
+
 export const searchRecipes = (query = "", category = "") =>
   api.get("/recipes", {
     params: {
@@ -11,8 +18,7 @@ export const searchRecipes = (query = "", category = "") =>
       category: category || undefined,
     },
   });
-export const loginUser = (data) =>
-  api.post("/auth/login", data);
+
 export const getAllRecipes = () => api.get("/recipes");
 
 export const getCategories = () => api.get("/categories");
