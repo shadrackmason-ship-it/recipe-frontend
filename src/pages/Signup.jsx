@@ -26,7 +26,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "https://recipe-backend-30j8.onrender.com/auth/register",
+        "https://recipe-backend-30j8.onrender.com/api/auth/register",
         {
           method: "POST",
           headers: {
