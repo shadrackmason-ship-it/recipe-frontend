@@ -18,6 +18,10 @@ function Login(){
             const formData = new URLSearchParams();
             formData.append("username", email);
             formData.append("password", password);
+            console.log("Email field:", email);
+            console.log("Password field:", password);
+            console.log("Sending body:", formData.toString());
+            
             const response = await fetch("https://recipe-backend-30j8.onrender.com/api/auth/login",
              {
                 method: "POST",
@@ -25,6 +29,9 @@ function Login(){
                 "Content-Type": "application/x-www-form-urlencoded",
                 },body: formData,});
       const data = await response.json();
+      
+      console.log("Response status:", response.status);
+      console.log("Response data:", data);
 
       if (!response.ok) {
         throw new Error(
