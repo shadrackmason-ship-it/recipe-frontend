@@ -1,4 +1,4 @@
-export default function RecipeCard({ recipe, onEdit, onDelete }) {
+function RecipeCard({ recipe, onEdit, onDelete }) {
   return (
     <div className="bg-white p-4 rounded shadow hover:shadow-lg transition space-y-3">
       <h2 className="text-lg font-bold">{recipe.title}</h2>
@@ -40,3 +40,5 @@ export default function RecipeCard({ recipe, onEdit, onDelete }) {
     </div>
   );
 }
+
+export default RecipeCard;

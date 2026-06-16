@@ -1,6 +1,14 @@
-import {  Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup"
+import { useState } from "react";
+import Navbar from "./components/Navbar";
+import RecipeForm from "./components/RecipeForm";
+import RecipeList from "./components/RecipeList";
+
+export default function App() {
+  const [refresh, setRefresh] = useState(false);
+
+  const triggerRefresh = () => {
+    setRefresh((prev) => !prev);
+  };
 
 function App() {
   return (
