@@ -21,7 +21,7 @@ function Login(){
             console.log("Email field:", email);
             console.log("Password field:", password);
             console.log("Sending body:", formData.toString());
-            const response = await fetch("https://recipe-backend-30j8.onrender.com/api/auth/login",
+            const response = await fetch("https://recipe-backend-30j8.onrender.com/auth/login",
              {
                 method: "POST",
                 headers: {
